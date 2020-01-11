@@ -1,0 +1,82 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>金E维License首页</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <script type="text/javascript" src="../layui/layui.js"></script>
+</head>
+<body>
+<div style="width: 500px">
+    <div style="text-align: center;font-size: larger;font-weight: bold;margin-bottom: 10px">授权界面</div>
+    <form class="layui-form" action="/license/generateLicense"  method="post">
+        <div class="layui-form-item">
+            <label class="layui-form-label" style="width: 90px!important;">授权开始时间</label>
+            <div class="layui-input-block" style="margin-left: 130px!important;">
+                <input type="text" lay-verify="required" class="layui-input" id="issuedTimeStr" name="issuedTimeStr">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" style="width: 90px!important;">授权终止时间</label>
+            <div class="layui-input-block" style="margin-left: 130px!important;">
+                <input type="text" lay-verify="required" class="layui-input" id="expiryTimeStr" name="expiryTimeStr">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" style="width: 90px!important;">是否绑定机器</label>
+            <div class="layui-input-block" style="width:80px; margin-left: 130px!important;">
+                <select name="isBind" lay-verify="required">
+                    <option value="1" selected>是</option>
+                    <option value="2">否</option>
+                </select>
+            </div>
+        </div>
+<!--        <div class="layui-form-item">
+            <label class="layui-form-label" style="width: 90px!important;">项目部署路径</label>
+            <div class="layui-input-block" style="margin-left: 130px!important;">
+                <input type="file" name="title" required  lay-verify="required" placeholder="请选择项目部署路径" autocomplete="off" class="layui-input">
+            </div>
+        </div>-->
+        <div class="layui-form-item" >
+            <div class="layui-input-block" style="margin-left: 130px!important;">
+                <button class="layui-btn"  lay-submit lay-filter="formDemo">执行授权</button>
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+<script>
+    layui.use(['laydate', 'form'], function(){
+        var laydate = layui.laydate;
+        var form = layui.form;
+        laydate.render({
+            elem: '#startTime'
+        });
+        laydate.render({
+            elem: '#endTime'
+        });
+        form.render();
+        //监听提交
+        form.on('submit(formDemo)', function(data){
+            layui.use(['jquery','layer'],function(){
+                var $ =layui.$;
+                var layer =layui.layer;
+                $.ajax({
+                    type:'POST',
+                    url: data.form.action,
+                    data: data.field,
+                    success: function(result){
+                        if(result&&result.success){
+                            layer.msg(result.msg);
+                        }else{
+                            layer.alert("授权失败!")
+                        }
+                    }
+                });
+            });
+            return false;
+        });
+    });
+</script>
+</html>
